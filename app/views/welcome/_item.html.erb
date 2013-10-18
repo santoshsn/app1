@@ -1,0 +1,110 @@
+<%  if (
+   (    ( ( item[1].text.length>5 ) rescue false)  &   ( ( !(item[1].avatar.to_s.length<3) ) rescue false)   &   ( ( !(item[1].avatar.to_s.eql?("/images/fallback/default.png")) ) rescue false) ))   %> 
+<div class="card-container span4" id="card_<%= item[1].id.to_s %>" style="height:200px; margin-bottom: 20px;" onclick="$('#xclck_<%= item[1].id.to_s %>').click();">
+
+<div class="card">
+<!-- 	Card Front Start -->
+	<figure class="front backface-hidden">
+	<div class="heading">
+		<h2 class="card_title">
+			<% if current_user %>
+			<%= link_to(truncate(item[1].name, :length => 30), item_path( item[1].id ) , :id => "clck_#{item[1].id.to_s}" ) %>
+			<% else %>
+			<%= truncate(item[1].name, :length => 30) %>
+			<% end %>
+		</h2>
+		<div class="flip action-details">
+		</div>
+	</div><!-- End .heading -->
+  	<div class="front_main">
+  		<%= link_to( ( image_tag item[1].avatar, :class => "item_image" rescue "" ), item_path( item[1].id ), :remote => true) %>
+  		<p class="description"><%= truncate(item[1].text, :length => 77) rescue "Please find the bad data" %></p>
+  	</div>  	
+	<div class="footing">
+		<p class="metadata">
+	    	<small>    	
+	    	<% if ( current_user.id == item[1].user.id rescue false ) %>
+	    		<b><%= link_to( "me", "/registry" ) %></b>
+			<% else %>
+				<b><%= link_to( ( item[1].user.short_name rescue "" ),  "/users/#{(item[1].user.id rescue nil)}/registry" )  %></b>
+			<% end %>
+			
+			<% if ( ( item[1].user.short_name.length<20 ) rescue true ) %>
+			   <%= time_ago_in_words(item[1].created_at) rescue "Please find the bad data" %> ago
+			<% end %>
+			</small>
+		</p>
+		<div class="card-action-icons">
+			<!-- a class="button icon add button-add-to-colection" href="#"><span>Add to...</span></a>
+			<a class="button icon share button-share" href="#"><span>Share</span></a -->
+			<%= link_to "<span>Favorite</span></a>".html_safe , item_path(item[1], :favorite => 1), :remote => true ,:class=>"button icon favorite #{ 'favorite-on' if (current_user.bookmark_ids.include?(item[1].id) rescue false)  }"  %>
+		</div>
+	</div>
+	</figure>
+<!-- 	Card Front End -->
+	
+<!-- 	Card Back Start -->
+	<figure class="back backface-hidden">
+	<div   class="heading">
+		<h2 class="card_title">
+			<% if current_user %>
+			<%= link_to(truncate(item[1].name, :length => 30), item_path( item[1].id ), :remote => true , :id => "clck_#{item[1].id.to_s}" ) %>
+			<% else %>
+			<%= truncate(item[1].name, :length => 30) %>
+			<% end %>
+		</h2>
+		<div class="flip action-details action-details-back">
+		</div>
+	</div><!-- End .heading -->
+  	<div class="card-details">
+      <ul class="card-contact-info">
+	<% if item[1].address.nil? %>
+	no address, show what ?
+	<% else %>
+	<% unless item[1].address.address1.blank? %>
+        <li class="address">
+          <%= item[1].address.address1 %><br>
+          <%= item[1].address.city %> <%= item[1].address.zip %> <%= item[1].address.state %>
+        </li>
+	<% end %>
+	<% unless item[1].address.tel.blank? %>
+        <li class="phone"><%=  item[1].address.tel %></li>
+	<% end %>
+	<% unless item[1].address.email.blank? %>
+        <li class="email"><%= item[1].address.email  %></li>
+	<% end %>
+	<% end %>
+	<% unless item[1].url.blank? %>
+        <li class="url"><a href="<%= item[1].url %>"><%= item[1].url  %></a></li><a href="<%=  item[1].url%>">
+        </a>
+	<% end %>
+	<!-- li class="twitter"><a href="http://kickinboot.com/"></a><a href="">@kickinboot</a></li>
+        <li class="facebook"><a href="">kickin.boot</a></li  -->
+      </ul>
+    </div>	
+	<div class="footing-back">
+		<ul>
+		</ul>
+	</div>
+	</figure>
+<!-- 	Card Back End -->
+
+<!-- 	Card Share Start -->
+	<div class="face-share">
+		<p>Supirb is the very best of everything according to you and the people you trust most.</p>
+	</div>
+<!-- 	Card Share End -->
+
+<!-- 	Card Add to Collection Start -->
+	<div class="face-add-to-collection">
+	</div>
+<!-- 	Card Add to Collection End -->
+	
+</div>
+
+<!--
+<div onClick="$('#clck_<%= item[1].id.to_s %>').click();" class="click_area" style="position:relative;top:-180px;left:5px;width:270px;height:110px">
+</div>
+-->
+</div><!-- End .span4 -->
+<% end %>
